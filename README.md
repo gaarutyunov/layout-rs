@@ -1,10 +1,10 @@
 # Layout RS
 
-[![Build and Deploy](https://github.com/garutyunov/layout-rs/actions/workflows/deploy.yml/badge.svg)](https://github.com/garutyunov/layout-rs/actions/workflows/deploy.yml)
+[![Build and Deploy](https://github.com/gaarutyunov/layout-rs/actions/workflows/deploy.yml/badge.svg)](https://github.com/gaarutyunov/layout-rs/actions/workflows/deploy.yml)
 
 A keyboard layout editor and configurator built with Yew and Rust WebAssembly. This application allows you to create, edit, and manage custom keyboard layouts with an intuitive web interface.
 
-## 🚀 [Try it live on GitHub Pages](https://garutyunov.github.io/layout-rs/)
+## 🚀 [Try it live on GitHub Pages](https://gaarutyunov.github.io/layout-rs/)
 
 ## Features
 
