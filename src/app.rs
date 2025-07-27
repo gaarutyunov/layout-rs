@@ -78,6 +78,16 @@ pub fn app() -> Html {
         })
     };
 
+    let on_export_layout = {
+        let keymap = keymap.clone();
+        Callback::from(move |_| {
+            let current_keymap = (*keymap).clone();
+            if let Err(e) = current_keymap.download_json() {
+                web_sys::console::log_1(&format!("Export error: {}", e).into());
+            }
+        })
+    };
+
     let on_key_drop = {
         let keymap = keymap.clone();
         let selected_key = selected_key.clone();
@@ -101,6 +111,7 @@ pub fn app() -> Html {
                 on_load_layout={on_load_layout}
                 on_reset_layout={on_reset_layout}
                 on_factory_reset_layout={on_factory_reset_layout}
+                on_export_layout={on_export_layout}
                 has_unsaved_changes={keymap.has_unsaved_changes()}
             />
             

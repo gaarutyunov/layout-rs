@@ -12,7 +12,18 @@ categories = ["gui", "wasm", "web-programming", "dactyl-manuform", "keyboard-lay
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [dependencies]
 yew = { version="0.21", features=["csr"] }
-web-sys = "0.3"
+web-sys = { version = "0.3", features = [
+  "console",
+  "Document",
+  "Element",
+  "HtmlElement",
+  "HtmlAnchorElement",
+  "Window",
+  "Storage",
+  "Blob",
+  "Url",
+] }
+js-sys = "0.3"
 gloo = "0.11"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"

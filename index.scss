@@ -220,6 +220,37 @@ body {
   height: 16px;
 }
 
+.export-btn {
+  background: #2d3d4a;
+  border: 2px solid #4a6b8a;
+  color: #5eb3ff;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+}
+
+.export-btn:hover {
+  background: #3d4d5a;
+  border-color: #5a7ba0;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(94, 179, 255, 0.3);
+}
+
+.export-btn:active {
+  transform: translateY(0);
+}
+
+.export-btn svg {
+  width: 16px;
+  height: 16px;
+  color: #5eb3ff;
+}
+
 .main {
   flex: 1;
   padding: 2rem;

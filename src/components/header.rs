@@ -8,6 +8,7 @@ pub struct HeaderProps {
     pub on_save_layout: Callback<()>,
     pub on_reset_layout: Callback<()>,
     pub on_factory_reset_layout: Callback<()>,
+    pub on_export_layout: Callback<()>,
     pub has_unsaved_changes: bool,
 }
 
@@ -38,6 +39,13 @@ pub fn header(props: &HeaderProps) -> Html {
         let on_factory_reset_layout = props.on_factory_reset_layout.clone();
         Callback::from(move |_: web_sys::MouseEvent| {
             on_factory_reset_layout.emit(());
+        })
+    };
+
+    let on_export = {
+        let on_export_layout = props.on_export_layout.clone();
+        Callback::from(move |_: web_sys::MouseEvent| {
+            on_export_layout.emit(());
         })
     };
 
@@ -87,6 +95,15 @@ pub fn header(props: &HeaderProps) -> Html {
                             <polyline points="10,9 9,9 8,9"/>
                         </svg>
                         {"Load"}
+                    </button>
+                    
+                    <button class="export-btn" onclick={on_export} title="Export Layout as JSON">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="7 10 12 15 17 10"/>
+                            <line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                        {"Export"}
                     </button>
                     
                     <button class="reset-btn" onclick={on_reset} title="Reset unsaved changes" disabled={!props.has_unsaved_changes}>
