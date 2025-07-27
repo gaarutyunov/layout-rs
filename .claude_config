@@ -1,0 +1,36 @@
+# Claude AI Assistant Configuration for layout-rs
+
+## Project Overview
+This is a Rust-based keyboard layout editor using Yew framework and Trunk for building/serving WASM applications.
+
+## Important Instructions
+
+### Terminal Management
+- **ALWAYS** check for active terminals before running `trunk serve` or `cargo build` commands
+- Use `get_terminal_output` tool to check if the application is already running
+- Look for output containing "Local:" or "trunk serve" to identify if dev server is active
+- If dev server is already running, inform the user instead of starting a new one
+- Default dev server runs on port 8080
+
+### Development Commands
+- Build: `cargo check` (for quick compilation check)
+- Serve: `trunk serve --port 8080` (only if not already running)
+- The application uses WASM and requires trunk for serving
+
+### File Structure
+- Main source: `src/` directory
+- Components: `src/components/` 
+- Styles: `index.scss`
+- Entry point: `index.html`
+
+### Key Features
+- Keyboard layout editor for Dactyl Manuform 5x7
+- Key library with custom key management
+- Local storage persistence
+- Reset and factory reset functionality
+
+### Best Practices
+1. Always check active terminals first
+2. Use cargo check for quick validation
+3. Only start new servers when necessary
+4. Prefer targeted file edits over large rewrites

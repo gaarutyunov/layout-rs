@@ -6,6 +6,7 @@ pub mod thumb_cluster;
 pub mod key_editor;
 pub mod key;
 pub mod keymap;
+pub mod key_library;
 
 pub use header::Header;
 pub use layout::Layout;
@@ -15,3 +16,4 @@ pub use thumb_cluster::ThumbCluster;
 pub use key_editor::KeyEditor;
 pub use key::Key;
 pub use keymap::Keymap;
+pub use key_library::KeyLibrary;

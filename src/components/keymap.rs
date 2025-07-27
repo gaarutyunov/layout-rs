@@ -70,6 +70,32 @@ impl Keymap {
         }
     }
 
+    pub fn reset(&mut self) -> Result<(), String> {
+        // Reset current to saved state (discard unsaved changes)
+        self.current = self.saved.clone();
+        web_sys::console::log_1(&format!("Reset to saved state! {} keys", self.current.len()).into());
+        Ok(())
+    }
+
+    pub fn factory_reset(&mut self) -> Result<(), String> {
+        // Clear localStorage
+        let window = window().ok_or("Window not available")?;
+        let storage = window.local_storage()
+            .map_err(|_| "Failed to access localStorage")?
+            .ok_or("localStorage not available")?;
+
+        storage.remove_item("dactyl_keymap")
+            .map_err(|_| "Failed to clear localStorage".to_string())?;
+
+        // Reset to default keymap
+        let default_keymap = Self::initialize_default();
+        self.current = default_keymap.clone();
+        self.saved = default_keymap;
+
+        web_sys::console::log_1(&format!("Factory reset! {} keys", self.current.len()).into());
+        Ok(())
+    }
+
     fn save_to_storage(keymap: &HashMap<(usize, usize), KeyConfig>) -> Result<(), String> {
         let window = window().ok_or("Window not available")?;
         let storage = window.local_storage()

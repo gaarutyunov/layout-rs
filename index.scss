@@ -152,6 +152,74 @@ body {
   height: 16px;
 }
 
+.reset-btn {
+  background: #4a2d2d;
+  border: 2px solid #8a4444;
+  color: #ff6b6b;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+}
+
+.reset-btn:disabled {
+  background: #3a2525;
+  border-color: #5a3333;
+  color: #aa4444;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.reset-btn:hover:not(:disabled) {
+  background: #5a3d3d;
+  border-color: #9a5454;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(255, 107, 107, 0.2);
+}
+
+.reset-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.reset-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+.factory-reset-btn {
+  background: #5a2d2d;
+  border: 2px solid #aa4444;
+  color: #ff8b8b;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+}
+
+.factory-reset-btn:hover {
+  background: #6a3d3d;
+  border-color: #bb5555;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(255, 139, 139, 0.3);
+}
+
+.factory-reset-btn:active {
+  transform: translateY(0);
+}
+
+.factory-reset-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
 .main {
   flex: 1;
   padding: 2rem;
@@ -159,6 +227,34 @@ body {
   flex-direction: column;
   gap: 2rem;
   align-items: center;
+  overflow: hidden;
+  min-height: 0; /* Allow flexbox to work properly */
+}
+
+.layout-container {
+  display: flex;
+  gap: 2rem;
+  width: 100%;
+  max-width: 1400px;
+  height: 100%;
+  overflow: hidden;
+  min-height: 0; /* Important for nested flexbox */
+}
+
+.keyboard-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  align-items: center;
+  min-width: 0;
+}
+
+.library-section {
+  width: 300px;
+  flex-shrink: 0;
+  height: calc(100vh - 140px); /* Use height instead of max-height */
+  min-height: 500px; /* Ensure minimum visible height */
 }
 
 .keyboard-container {
@@ -327,8 +423,320 @@ body {
     padding: 1rem;
   }
   
+  .layout-container {
+    flex-direction: column;
+    align-items: center;
+    height: auto; /* Allow natural height on mobile */
+  }
+  
+  .library-section {
+    width: 100%;
+    max-height: 50vh; /* Limit height on mobile */
+    min-height: 300px; /* Ensure minimum usable height */
+    order: 2;
+  }
+  
+  .keyboard-section {
+    order: 1;
+  }
+  
   .header {
     flex-direction: column;
     align-items: flex-start;
   }
+  
+  /* Mobile adjustments for key library */
+  .key-grid {
+    grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+    gap: 0.5rem;
+  }
+  
+  .add-key-form {
+    padding: 0.8rem;
+  }
+  
+  .form-row {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .library-header {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: stretch;
+  }
+  
+  .add-key-btn {
+    justify-content: center;
+  }
+}
+
+/* Key Library Styles */
+.key-library {
+  background: #2d2d2d;
+  border: 2px solid #444;
+  border-radius: 12px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  min-height: 0; /* Allow flexbox to shrink */
+  box-sizing: border-box; /* Include border in height calculation */
+}
+
+.library-header {
+  padding: 1rem;
+  border-bottom: 2px solid #444;
+  background: #333;
+  flex-shrink: 0;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.library-header h3 {
+  margin: 0;
+  color: #00d4aa;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.add-key-btn {
+  background: #2d4a3d;
+  border: 2px solid #4a7a5a;
+  color: #70ff8c;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.add-key-btn:hover {
+  background: #3d5a4d;
+  border-color: #5a8a6a;
+  transform: translateY(-1px);
+}
+
+.add-key-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+.add-key-form {
+  background: #2a2a2a;
+  border-bottom: 2px solid #444;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.form-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.category-input,
+.key-input {
+  background: #1a1a1a;
+  border: 2px solid #444;
+  color: #fff;
+  padding: 0.5rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  flex: 1;
+}
+
+.category-input:focus,
+.key-input:focus {
+  outline: none;
+  border-color: #00d4aa;
+}
+
+.add-btn {
+  background: #2d4a3d;
+  border: 2px solid #4a7a5a;
+  color: #70ff8c;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.add-btn:hover {
+  background: #3d5a4d;
+  border-color: #5a8a6a;
+}
+
+.library-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+  scroll-behavior: smooth;
+  min-height: 0; /* Important for scroll to work in flexbox */
+}
+
+.library-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.library-content::-webkit-scrollbar-track {
+  background: #1a1a1a;
+  border-radius: 4px;
+}
+
+.library-content::-webkit-scrollbar-thumb {
+  background: #555;
+  border-radius: 4px;
+}
+
+.library-content::-webkit-scrollbar-thumb:hover {
+  background: #666;
+}
+
+.key-category {
+  margin-bottom: 1.5rem;
+}
+
+.key-category:last-child {
+  margin-bottom: 0;
+}
+
+.category-title {
+  color: #00d4aa;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin: 0 0 0.75rem 0;
+  padding-bottom: 0.25rem;
+  border-bottom: 1px solid #444;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.key-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(55px, 1fr));
+  gap: 0.75rem;
+  align-items: start;
+}
+
+.library-key-container {
+  position: relative;
+  display: block;
+  width: 100%;
+}
+
+.library-key {
+  background: #444;
+  border: 1px solid #666;
+  color: #fff;
+  padding: 0.5rem 0.25rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.75rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  min-height: 40px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  word-break: break-word;
+  line-height: 1.2;
+  box-sizing: border-box;
+}
+
+.library-key:hover {
+  background: #00d4aa;
+  color: #000;
+  border-color: #00d4aa;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 212, 170, 0.3);
+}
+
+.library-key:active {
+  transform: translateY(0);
+}
+
+.remove-key-btn {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: #cc4444;
+  border: 2px solid #fff;
+  color: white;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  z-index: 10;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.remove-key-btn:hover {
+  background: #ee5555;
+  transform: scale(1.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+}
+
+.library-key:hover {
+  background: #00d4aa;
+  color: #000;
+  border-color: #00d4aa;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 212, 170, 0.3);
+}
+
+.library-key:active {
+  transform: translateY(0);
+}
+
+/* Custom category styling */
+.key-category:has(.library-key-container .remove-key-btn) .category-title {
+  color: #70ff8c;
+  position: relative;
+}
+
+.key-category:has(.library-key-container .remove-key-btn) .category-title::after {
+  content: " (Custom)";
+  font-size: 0.7rem;
+  opacity: 0.8;
+  font-weight: normal;
+}
+
+/* Special styling for different key types */
+.library-key[title*="F1"], .library-key[title*="F2"], .library-key[title*="F3"],
+.library-key[title*="F4"], .library-key[title*="F5"], .library-key[title*="F6"],
+.library-key[title*="F7"], .library-key[title*="F8"], .library-key[title*="F9"],
+.library-key[title*="F10"], .library-key[title*="F11"], .library-key[title*="F12"] {
+  background: #4a3d2d;
+  border-color: #8b6914;
+}
+
+.library-key[title*="SHIFT"], .library-key[title*="CTRL"], 
+.library-key[title*="ALT"], .library-key[title*="GUI"],
+.library-key[title*="CMD"], .library-key[title*="WIN"] {
+  background: #3d2d4a;
+  border-color: #6b1488;
+}
+
+.library-key[title*="LAYER"], .library-key[title*="LOWER"], 
+.library-key[title*="RAISE"], .library-key[title*="ADJUST"] {
+  background: #2d4a4a;
+  border-color: #146b6b;
 }

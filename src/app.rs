@@ -56,6 +56,28 @@ pub fn app() -> Html {
         })
     };
 
+    let on_reset_layout = {
+        let keymap = keymap.clone();
+        Callback::from(move |_| {
+            let mut new_keymap = (*keymap).clone();
+            if let Err(e) = new_keymap.reset() {
+                web_sys::console::log_1(&format!("Reset error: {}", e).into());
+            }
+            keymap.set(new_keymap);
+        })
+    };
+
+    let on_factory_reset_layout = {
+        let keymap = keymap.clone();
+        Callback::from(move |_| {
+            let mut new_keymap = (*keymap).clone();
+            if let Err(e) = new_keymap.factory_reset() {
+                web_sys::console::log_1(&format!("Factory reset error: {}", e).into());
+            }
+            keymap.set(new_keymap);
+        })
+    };
+
     html! {
         <div class="app">
             <Header 
@@ -63,6 +85,8 @@ pub fn app() -> Html {
                 on_layer_change={on_layer_change}
                 on_save_layout={on_save_layout}
                 on_load_layout={on_load_layout}
+                on_reset_layout={on_reset_layout}
+                on_factory_reset_layout={on_factory_reset_layout}
                 has_unsaved_changes={keymap.has_unsaved_changes()}
             />
             

@@ -1,6 +1,4 @@
-/dist/
-/target/
-
+# Gitignore additions for AI config files
 # Keep AI assistant configuration files
 !.claude_config
 !.copilot_config.json
