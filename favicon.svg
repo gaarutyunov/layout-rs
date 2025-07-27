@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <!-- Keycap base -->
+  <rect x="2" y="4" width="28" height="24" rx="4" ry="4" fill="#f5f5f5" stroke="#d0d0d0" stroke-width="1"/>
+  
+  <!-- Keycap shadow/depth -->
+  <rect x="3" y="5" width="26" height="22" rx="3" ry="3" fill="#ffffff"/>
+  
+  <!-- Inner keycap surface -->
+  <rect x="4" y="6" width="24" height="20" rx="2" ry="2" fill="#f8f8f8" stroke="#e0e0e0" stroke-width="0.5"/>
+  
+  <!-- DM text -->
+  <text x="16" y="20" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#333333">DM</text>
+  
+  <!-- Highlight on top edge -->
+  <rect x="5" y="7" width="22" height="2" rx="1" ry="1" fill="#ffffff" opacity="0.7"/>
+</svg>
