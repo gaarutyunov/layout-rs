@@ -1,27 +1,10 @@
 use yew::prelude::*;
-use serde::{Serialize, Deserialize};
 use wasm_bindgen::JsCast;
-
-#[derive(Clone, PartialEq, Serialize, Deserialize)]
-pub struct KeyConfig {
-    pub label: String,
-    pub keycode: String,
-    pub layer: usize,
-}
-
-impl Default for KeyConfig {
-    fn default() -> Self {
-        Self {
-            label: String::new(),
-            keycode: String::new(),
-            layer: 0,
-        }
-    }
-}
+use crate::keycodes::KeyboardUsage;
 
 #[derive(Properties, PartialEq)]
 pub struct KeyProps {
-    pub key_config: KeyConfig,
+    pub key_config: KeyboardUsage,
     pub is_selected: bool,
     pub onclick: Callback<()>,
     #[prop_or_default]
@@ -92,7 +75,7 @@ pub fn key(props: &KeyProps) -> Html {
             ondragleave={on_drag_leave}
             ondrop={on_drop}
         >
-            {&props.key_config.label}
+            {Into::<&'static str>::into(props.key_config)}
         </button>
     }
 }

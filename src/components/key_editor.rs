@@ -1,11 +1,11 @@
 use yew::prelude::*;
 use web_sys::HtmlInputElement;
-use super::key::KeyConfig;
+use crate::keycodes::KeyboardUsage;
 
 #[derive(Properties, PartialEq)]
 pub struct KeyEditorProps {
     pub selected_key: Option<(usize, usize)>,
-    pub key_config: Option<KeyConfig>,
+    pub key_config: Option<KeyboardUsage>,
     pub on_key_change: Callback<String>,
 }
 
@@ -21,13 +21,13 @@ pub fn key_editor(props: &KeyEditorProps) -> Html {
     };
 
     if let Some((row, col)) = props.selected_key {
-        let key_config = props.key_config.clone().unwrap_or_default();
+        let key_config = props.key_config.clone().unwrap_or(KeyboardUsage::KeyboardErrorRollOver);
         html! {
             <div class="key-editor">
                 <h3>{format!("Editing Key [{}, {}]", row, col)}</h3>
                 <input 
                     type="text" 
-                    value={key_config.label} 
+                    value={Into::<&'static str>::into(key_config)} 
                     placeholder="Key label"
                     onchange={on_change}
                 />

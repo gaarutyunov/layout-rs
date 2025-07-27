@@ -1,10 +1,11 @@
 use yew::prelude::*;
-use super::key::{Key, KeyConfig};
+use super::key::Key;
 use std::collections::HashMap;
+use crate::keycodes::KeyboardUsage;
 
 #[derive(Properties, PartialEq)]
 pub struct ThumbClusterProps {
-    pub keymap: HashMap<(usize, usize), KeyConfig>,
+    pub keymap: HashMap<(usize, usize), KeyboardUsage>,
     pub selected_key: Option<(usize, usize)>,
     pub on_key_click: Callback<(usize, usize)>,
     pub current_layer: usize,
@@ -48,7 +49,7 @@ pub fn thumb_cluster(props: &ThumbClusterProps) -> Html {
                 html! {
                     <div class="thumb-row">
                         {for row_positions.iter().map(|&&(row, col)| {
-                            let key_config = props.keymap.get(&(row, col)).cloned().unwrap_or_default();
+                            let key_config = props.keymap.get(&(row, col)).cloned().unwrap_or(KeyboardUsage::KeyboardErrorRollOver);
                             let is_selected = props.selected_key == Some((row, col));
                             let onclick = {
                                 let on_key_click = props.on_key_click.clone();

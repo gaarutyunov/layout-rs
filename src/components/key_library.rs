@@ -3,10 +3,11 @@ use web_sys::window;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use wasm_bindgen::JsCast;
+use crate::keycodes::KeyboardUsage;
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct KeyLibraryData {
-    custom_keys: HashMap<String, Vec<String>>,
+    custom_keys: HashMap<String, Vec<KeyboardUsage>>,
 }
 
 impl KeyLibraryData {
@@ -14,63 +15,59 @@ impl KeyLibraryData {
         Self::load_from_storage()
     }
 
-    pub fn get_default_categories() -> Vec<(&'static str, Vec<&'static str>)> {
+    pub fn get_default_categories() -> Vec<(&'static str, Vec<KeyboardUsage>)> {
+        use KeyboardUsage::*;
+        
         vec![
             ("Letters", vec![
-                "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
-                "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"
+                KeyboardAa, KeyboardBb, KeyboardCc, KeyboardDd, KeyboardEe, KeyboardFf, KeyboardGg, 
+                KeyboardHh, KeyboardIi, KeyboardJj, KeyboardKk, KeyboardLl, KeyboardMm, KeyboardNn, 
+                KeyboardOo, KeyboardPp, KeyboardQq, KeyboardRr, KeyboardSs, KeyboardTt, KeyboardUu, 
+                KeyboardVv, KeyboardWw, KeyboardXx, KeyboardYy, KeyboardZz
             ]),
             ("Numbers", vec![
-                "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"
+                Keyboard0CloseParens, Keyboard1Exclamation, Keyboard2At, Keyboard3Hash, Keyboard4Dollar, 
+                Keyboard5Percent, Keyboard6Caret, Keyboard7Ampersand, Keyboard8Asterisk, Keyboard9OpenParens
             ]),
             ("Function Keys", vec![
-                "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12"
+                KeyboardF1, KeyboardF2, KeyboardF3, KeyboardF4, KeyboardF5, KeyboardF6, 
+                KeyboardF7, KeyboardF8, KeyboardF9, KeyboardF10, KeyboardF11, KeyboardF12
             ]),
             ("Modifiers", vec![
-                "SHIFT", "CTRL", "ALT", "GUI", "CMD", "WIN", "META", "SUPER",
-                "LSHIFT", "RSHIFT", "LCTRL", "RCTRL", "LALT", "RALT", "LGUI", "RGUI"
+                KeyboardLeftShift, KeyboardRightShift, KeyboardLeftControl, KeyboardRightControl, 
+                KeyboardLeftAlt, KeyboardRightAlt, KeyboardLeftGUI, KeyboardRightGUI
             ]),
             ("Navigation", vec![
-                "UP", "DOWN", "LEFT", "RIGHT", "HOME", "END", "PGUP", "PGDN",
-                "INS", "DEL", "BKSP", "TAB", "ESC", "MENU", "PRTSC", "PAUSE", "SCROLL"
+                KeyboardUpArrow, KeyboardDownArrow, KeyboardLeftArrow, KeyboardRightArrow, 
+                KeyboardHome, KeyboardEnd, KeyboardPageUp, KeyboardPageDown, KeyboardInsert, 
+                KeyboardDelete, KeyboardBackspace, KeyboardTab, KeyboardEscape, KeyboardPrintScreen, 
+                KeyboardPause, KeyboardScrollLock
             ]),
             ("Symbols", vec![
-                "SPACE", "SPC", "ENT", "ENTER", "-", "=", "[", "]", "\\", ";", "'",
-                ",", ".", "/", "`", "~", "!", "@", "#", "$", "%", "^", "&", "*",
-                "(", ")", "_", "+", "{", "}", "|", ":", "\"", "<", ">", "?"
+                KeyboardSpacebar, KeyboardEnter, KeyboardDashUnderscore, KeyboardEqualPlus, 
+                KeyboardOpenBracketBrace, KeyboardCloseBracketBrace, KeyboardBackslashBar, 
+                KeyboardSemiColon, KeyboardSingleDoubleQuote, KeyboardCommaLess, KeyboardPeriodGreater, 
+                KeyboardSlashQuestion, KeyboardBacktickTilde
             ]),
             ("Special", vec![
-                "CAPS", "CAPSLOCK", "NUMLOCK", "SCROLL", "BREAK", "SYSREQ", "POWER",
-                "SLEEP", "WAKE", "MUTE", "VOLUP", "VOLDN", "PREV", "NEXT", "PLAY", "STOP"
+                KeyboardCapsLock, KeypadNumLock, KeyboardScrollLock, KeyboardPause, KeyboardPower, 
+                KeyboardMute, KeyboardVolumeUp, KeyboardVolumeDown
             ]),
             ("Numpad", vec![
-                "KP0", "KP1", "KP2", "KP3", "KP4", "KP5", "KP6", "KP7", "KP8", "KP9",
-                "KPDOT", "KPENTER", "KPPLUS", "KPMINUS", "KPMULT", "KPDIV", "KPEQL"
-            ]),
-            ("Layers", vec![
-                "LAYER0", "LAYER1", "LAYER2", "LAYER3", "LAYER4", "LAYER5",
-                "LOWER", "RAISE", "ADJUST", "SYMBOL", "NUMERIC", "FUNCTION", "GAMING"
-            ]),
-            ("Macros", vec![
-                "MACRO1", "MACRO2", "MACRO3", "MACRO4", "MACRO5",
-                "COPY", "PASTE", "CUT", "UNDO", "REDO", "SAVE", "FIND", "REPLACE"
-            ]),
-            ("Mouse", vec![
-                "MS_L", "MS_R", "MS_M", "MS_U", "MS_D", "MS_WH_U", "MS_WH_D",
-                "MS_BTN1", "MS_BTN2", "MS_BTN3", "MS_BTN4", "MS_BTN5"
-            ]),
-            ("Empty", vec![
-                "NONE", "TRANS", "___", "XXX", "NO"
+                Keypad0Insert, Keypad1End, Keypad2DownArrow, Keypad3PageDown, Keypad4LeftArrow, 
+                Keypad5, Keypad6RightArrow, Keypad7Home, Keypad8UpArrow, Keypad9PageUp, 
+                KeypadPeriodDelete, KeypadEnter, KeypadPlus, KeypadMinus, KeypadMultiply, 
+                KeypadDivide, KeypadEqual
             ])
         ]
     }
 
-    pub fn get_all_categories(&self) -> Vec<(String, Vec<String>)> {
+    pub fn get_all_categories(&self) -> Vec<(String, Vec<KeyboardUsage>)> {
         let mut categories = Vec::new();
         
         // Add default categories
         for (name, keys) in Self::get_default_categories() {
-            categories.push((name.to_string(), keys.iter().map(|s| s.to_string()).collect()));
+            categories.push((name.to_string(), keys));
         }
         
         // Add custom categories
@@ -92,11 +89,12 @@ impl KeyLibraryData {
             category.trim().to_string()
         };
         
-        let key = key.trim().to_uppercase();
+        // Convert string key to KeyboardUsage
+        let keycode: KeyboardUsage = key.trim().into();
         
         // Check if key already exists in this category
         if let Some(existing_keys) = self.custom_keys.get(&category) {
-            if existing_keys.contains(&key) {
+            if existing_keys.contains(&keycode) {
                 return Err(format!("Key '{}' already exists in category '{}'", key, category));
             }
         }
@@ -104,14 +102,14 @@ impl KeyLibraryData {
         self.custom_keys
             .entry(category)
             .or_insert_with(Vec::new)
-            .push(key);
+            .push(keycode);
         
         self.save_to_storage()
     }
 
-    pub fn remove_key(&mut self, category: &str, key: &str) -> Result<(), String> {
+    pub fn remove_key(&mut self, category: &str, keycode: KeyboardUsage) -> Result<(), String> {
         if let Some(keys) = self.custom_keys.get_mut(category) {
-            if let Some(pos) = keys.iter().position(|k| k == key) {
+            if let Some(pos) = keys.iter().position(|k| *k == keycode) {
                 keys.remove(pos);
                 if keys.is_empty() {
                     self.custom_keys.remove(category);
@@ -120,7 +118,7 @@ impl KeyLibraryData {
                 return Ok(());
             }
         }
-        Err(format!("Key '{}' not found in category '{}'", key, category))
+        Err(format!("Key '{:?}' not found in category '{}'", keycode, category))
     }
 
     fn save_to_storage(&self) -> Result<(), String> {
@@ -165,7 +163,7 @@ impl KeyLibraryData {
 
 #[derive(Properties, PartialEq)]
 pub struct KeyLibraryProps {
-    pub on_key_select: Callback<String>,
+    pub on_key_select: Callback<KeyboardUsage>,
 }
 
 #[function_component(KeyLibrary)]
@@ -258,14 +256,14 @@ pub fn key_library(props: &KeyLibraryProps) -> Html {
 
     let on_remove_key = {
         let library_data = library_data.clone();
-        Callback::from(move |key_info: (String, String)| {
+        Callback::from(move |key_info: (String, KeyboardUsage)| {
             let mut data = (*library_data).clone();
-            let (category, key) = key_info;
+            let (category, keycode) = key_info;
             
-            match data.remove_key(&category, &key) {
+            match data.remove_key(&category, keycode) {
                 Ok(_) => {
                     library_data.set(data);
-                    web_sys::console::log_1(&format!("Key '{}' removed successfully from category '{}'", key, category).into());
+                    web_sys::console::log_1(&format!("Key '{:?}' removed successfully from category '{}'", keycode, category).into());
                 }
                 Err(e) => {
                     web_sys::console::log_1(&format!("Error removing key: {}", e).into());
@@ -332,18 +330,19 @@ pub fn key_library(props: &KeyLibraryProps) -> Html {
                                 <h4 class="category-title">{&category}</h4>
                                 <div class="key-grid">
                                     {
-                                        keys.into_iter().map(|key| {
+                                        keys.into_iter().map(|keycode| {
+                                            let label: &str = keycode.into();
                                             let on_select = {
-                                                let key = key.clone();
+                                                let keycode = keycode.clone();
                                                 let on_key_select = props.on_key_select.clone();
                                                 Callback::from(move |_| {
-                                                    on_key_select.emit(key.clone());
+                                                    on_key_select.emit(keycode.clone());
                                                 })
                                             };
                                             
                                             let on_remove = {
                                                 let category = category.clone();
-                                                let key = key.clone();
+                                                let keycode = keycode.clone();
                                                 let on_remove_key = on_remove_key.clone();
                                                 Callback::from(move |e: web_sys::MouseEvent| {
                                                     e.stop_propagation();
@@ -353,17 +352,17 @@ pub fn key_library(props: &KeyLibraryProps) -> Html {
                                                     } else {
                                                         category.clone()
                                                     };
-                                                    on_remove_key.emit((actual_category, key.clone()));
+                                                    on_remove_key.emit((actual_category, keycode.clone()));
                                                 })
                                             };
                                             
                                             let on_drag_start = {
-                                                let key = key.clone();
+                                                let label = label.to_string();
                                                 Callback::from(move |e: DragEvent| {
-                                                    // Store key in a data attribute for the drop handler to access
+                                                    // Store key label in a data attribute for the drop handler to access
                                                     if let Some(target) = e.target() {
                                                         if let Ok(element) = target.dyn_into::<web_sys::HtmlElement>() {
-                                                            let _ = element.set_attribute("data-drag-key", &key);
+                                                            let _ = element.set_attribute("data-drag-key", &label);
                                                         }
                                                     }
                                                 })
@@ -374,12 +373,12 @@ pub fn key_library(props: &KeyLibraryProps) -> Html {
                                                     <button 
                                                         class="library-key"
                                                         onclick={on_select}
-                                                        key={key.clone()}
-                                                        title={format!("Click to use '{}' or drag to keyboard", key)}
+                                                        key={label}
+                                                        title={format!("Click to use '{}' or drag to keyboard", label)}
                                                         draggable="true"
                                                         ondragstart={on_drag_start}
                                                     >
-                                                        {&key}
+                                                        {label}
                                                     </button>
                                                     {if is_custom {
                                                         html! {

@@ -1,13 +1,27 @@
 use std::collections::HashMap;
 use web_sys::window;
 use serde_json;
-
-use super::key::KeyConfig;
+use crate::keycodes::{KeyboardUsage};
+use paste::paste;
 
 #[derive(Clone)]
 pub struct Keymap {
-    current: HashMap<(usize, usize), KeyConfig>,
-    saved: HashMap<(usize, usize), KeyConfig>,
+    current: HashMap<(usize, usize), KeyboardUsage>,
+    saved: HashMap<(usize, usize), KeyboardUsage>,
+}
+
+macro_rules! k {
+    ($name:ident) => {
+        paste! {
+            KeyboardUsage::[<Keyboard $name>]
+        }
+    };
+}
+
+macro_rules! ku {
+    ($name:ident) => {
+        KeyboardUsage::$name
+    };
 }
 
 impl Keymap {
@@ -20,19 +34,13 @@ impl Keymap {
         Self { current, saved }
     }
 
-    pub fn get_current(&self) -> &HashMap<(usize, usize), KeyConfig> {
+    pub fn current(&self) -> &HashMap<(usize, usize), KeyboardUsage> {
         &self.current
     }
 
-    pub fn set_current(&mut self, keymap: HashMap<(usize, usize), KeyConfig>) {
-        self.current = keymap;
-    }
-
     pub fn update_key(&mut self, row: usize, col: usize, label: String) {
-        if let Some(key_config) = self.current.get_mut(&(row, col)) {
-            key_config.label = label.clone();
-            key_config.keycode = label.to_lowercase();
-        }
+        let keycode: KeyboardUsage = label.into();
+        self.current.insert((row, col), keycode);
     }
 
     pub fn has_unsaved_changes(&self) -> bool {
@@ -96,15 +104,15 @@ impl Keymap {
         Ok(())
     }
 
-    fn save_to_storage(keymap: &HashMap<(usize, usize), KeyConfig>) -> Result<(), String> {
+    fn save_to_storage(keymap: &HashMap<(usize, usize), KeyboardUsage>) -> Result<(), String> {
         let window = window().ok_or("Window not available")?;
         let storage = window.local_storage()
             .map_err(|_| "Failed to access localStorage")?
             .ok_or("localStorage not available")?;
 
         // Convert HashMap to a Vec of serializable entries
-        let keymap_entries: Vec<((usize, usize), KeyConfig)> = keymap.iter()
-            .map(|(&key, value)| (key, value.clone()))
+        let keymap_entries: Vec<((usize, usize), KeyboardUsage)> = keymap.iter()
+            .map(|(&key, &value)| (key, value))
             .collect();
 
         // Serialize to JSON
@@ -118,11 +126,11 @@ impl Keymap {
         Ok(())
     }
 
-    fn load_from_storage() -> HashMap<(usize, usize), KeyConfig> {
+    fn load_from_storage() -> HashMap<(usize, usize), KeyboardUsage> {
         Self::load_from_storage_result().unwrap_or_else(|_| Self::initialize_default())
     }
 
-    fn load_from_storage_result() -> Result<HashMap<(usize, usize), KeyConfig>, String> {
+    fn load_from_storage_result() -> Result<HashMap<(usize, usize), KeyboardUsage>, String> {
         let window = window().ok_or("Window not available")?;
         let storage = window.local_storage()
             .map_err(|_| "Failed to access localStorage")?
@@ -135,19 +143,19 @@ impl Keymap {
         web_sys::console::log_1(&format!("Found saved data, length: {}", saved_keymap.len()).into());
 
         // Try to deserialize as Vec of entries first
-        if let Ok(keymap_entries) = serde_json::from_str::<Vec<((usize, usize), KeyConfig)>>(&saved_keymap) {
+        if let Ok(keymap_entries) = serde_json::from_str::<Vec<((usize, usize), KeyboardUsage)>>(&saved_keymap) {
             return Ok(keymap_entries.into_iter().collect());
         }
 
         // Fallback: try to deserialize as HashMap directly (for backward compatibility)
-        if let Ok(keymap) = serde_json::from_str::<HashMap<(usize, usize), KeyConfig>>(&saved_keymap) {
+        if let Ok(keymap) = serde_json::from_str::<HashMap<(usize, usize), KeyboardUsage>>(&saved_keymap) {
             return Ok(keymap);
         }
 
         Err("Failed to parse saved layout data".to_string())
     }
 
-    fn initialize_default() -> HashMap<(usize, usize), KeyConfig> {
+    fn initialize_default() -> HashMap<(usize, usize), KeyboardUsage> {
         // Initialize with default Dactyl Manuform 5x7 layout
         let mut map = HashMap::new();
         
@@ -156,46 +164,34 @@ impl Keymap {
         for row in 0..3 {
             for col in 0..7 {
                 let default_key = match (row, col) {
-                    (0, 0) => "ESC", (0, 1) => "1", (0, 2) => "2", (0, 3) => "3", (0, 4) => "4", (0, 5) => "5", (0, 6) => "6",
-                    (1, 0) => "TAB", (1, 1) => "Q", (1, 2) => "W", (1, 3) => "E", (1, 4) => "R", (1, 5) => "T", (1, 6) => "Y",
-                    (2, 0) => "CAPS", (2, 1) => "A", (2, 2) => "S", (2, 3) => "D", (2, 4) => "F", (2, 5) => "G", (2, 6) => "H",
-                    _ => "",
+                    (0, 0) => k!(Escape), (0, 1) => ku!(Keyboard1Exclamation), (0, 2) => ku!(Keyboard2At), (0, 3) => ku!(Keyboard3Hash), (0, 4) => ku!(Keyboard4Dollar), (0, 5) => ku!(Keyboard5Percent), (0, 6) => ku!(Keyboard6Caret),
+                    (1, 0) => k!(Tab), (1, 1) => k!(Qq), (1, 2) => k!(Ww), (1, 3) => k!(Ee), (1, 4) => k!(Rr), (1, 5) => k!(Tt), (1, 6) => k!(Yy),
+                    (2, 0) => k!(CapsLock), (2, 1) => k!(Aa), (2, 2) => k!(Ss), (2, 3) => k!(Dd), (2, 4) => k!(Ff), (2, 5) => k!(Gg), (2, 6) => k!(Hh),
+                    _ => k!(ErrorRollOver),
                 };
                 
-                map.insert((row, col), KeyConfig {
-                    label: default_key.to_string(),
-                    keycode: default_key.to_lowercase(),
-                    layer: 0,
-                });
+                map.insert((row, col), default_key.into());
             }
         }
         
         // Row 3: 6 keys (cols 0-5, aligned left)
         for col in 0..6 {
             let default_key = match col {
-                0 => "SHIFT", 1 => "Z", 2 => "X", 3 => "C", 4 => "V", 5 => "B",
-                _ => "",
+                0 => k!(LeftShift), 1 => k!(Zz), 2 => k!(Xx), 3 => k!(Cc), 4 => k!(Vv), 5 => k!(Bb),
+                _ => k!(ErrorRollOver),
             };
             
-            map.insert((3, col), KeyConfig {
-                label: default_key.to_string(),
-                keycode: default_key.to_lowercase(),
-                layer: 0,
-            });
+            map.insert((3, col), default_key.into());
         }
         
         // Row 4: 4 keys (cols 0-3, aligned left)
         for col in 0..4 {
             let default_key = match col {
-                0 => "CTRL", 1 => "ALT", 2 => "GUI", 3 => "LOWER",
-                _ => "",
+                0 => k!(LeftControl), 1 => k!(LeftAlt), 2 => k!(LeftGUI), 3 => k!(Lower),
+                _ => k!(ErrorRollOver),
             };
             
-            map.insert((4, col), KeyConfig {
-                label: default_key.to_string(),
-                keycode: default_key.to_lowercase(),
-                layer: 0,
-            });
+            map.insert((4, col), default_key.into());
         }
         
         // Right hand regular keys
@@ -203,46 +199,34 @@ impl Keymap {
         for row in 0..3 {
             for col in 7..14 {
                 let default_key = match (row, col) {
-                    (0, 7) => "7", (0, 8) => "8", (0, 9) => "9", (0, 10) => "0", (0, 11) => "-", (0, 12) => "=", (0, 13) => "BKSP",
-                    (1, 7) => "U", (1, 8) => "I", (1, 9) => "O", (1, 10) => "P", (1, 11) => "[", (1, 12) => "]", (1, 13) => "\\",
-                    (2, 7) => "J", (2, 8) => "K", (2, 9) => "L", (2, 10) => ";", (2, 11) => "'", (2, 12) => "ENT", (2, 13) => "",
-                    _ => "",
+                    (0, 7) => ku!(Keyboard7Ampersand), (0, 8) => ku!(Keyboard8Asterisk), (0, 9) => ku!(Keyboard9OpenParens), (0, 10) => ku!(Keyboard0CloseParens), (0, 11) => k!(DashUnderscore), (0, 12) => k!(EqualPlus), (0, 13) => k!(Backspace),
+                    (1, 7) => k!(Uu), (1, 8) => k!(Ii), (1, 9) => k!(Oo), (1, 10) => k!(Pp), (1, 11) => k!(OpenBracketBrace), (1, 12) => k!(CloseBracketBrace), (1, 13) => k!(BackslashBar),
+                    (2, 7) => k!(Jj), (2, 8) => k!(Kk), (2, 9) => k!(Ll), (2, 10) => k!(SemiColon), (2, 11) => k!(SingleDoubleQuote), (2, 12) => k!(Enter), (2, 13) => k!(Empty),
+                    _ => k!(ErrorRollOver),
                 };
                 
-                map.insert((row, col), KeyConfig {
-                    label: default_key.to_string(),
-                    keycode: default_key.to_lowercase(),
-                    layer: 0,
-                });
+                map.insert((row, col), default_key.into());
             }
         }
         
         // Row 3: 6 keys (cols 8-13, aligned right)
         for col in 8..14 {
             let default_key = match col {
-                8 => "N", 9 => "M", 10 => ",", 11 => ".", 12 => "/", 13 => "SHIFT",
-                _ => "",
+                8 => k!(Nn), 9 => k!(Mm), 10 => k!(CommaLess), 11 => k!(PeriodGreater), 12 => k!(SlashQuestion), 13 => k!(RightShift),
+                _ => k!(ErrorRollOver),
             };
             
-            map.insert((3, col), KeyConfig {
-                label: default_key.to_string(),
-                keycode: default_key.to_lowercase(),
-                layer: 0,
-            });
+            map.insert((3, col), default_key.into());
         }
         
         // Row 4: 4 keys (cols 10-13, aligned right)
         for col in 10..14 {
             let default_key = match col {
-                10 => "RAISE", 11 => "GUI", 12 => "ALT", 13 => "CTRL",
-                _ => "",
+                10 => k!(Raise), 11 => k!(RightGUI), 12 => k!(RightAlt), 13 => k!(RightControl),
+                _ => k!(ErrorRollOver),
             };
             
-            map.insert((4, col), KeyConfig {
-                label: default_key.to_string(),
-                keycode: default_key.to_lowercase(),
-                layer: 0,
-            });
+            map.insert((4, col), default_key.into());
         }
         
         // Thumb cluster keys
@@ -250,86 +234,62 @@ impl Keymap {
         // Row 1: 2 keys at cols 5-6 (aligned right, empty slot under col 6)
         for col in 5..7 {
             let default_key = match col {
-                5 => "HOME", 6 => "END",
-                _ => "",
+                5 => k!(Home), 6 => k!(End),
+                _ => k!(ErrorRollOver),
             };
             
-            map.insert((5, col), KeyConfig {
-                label: default_key.to_string(),
-                keycode: default_key.to_lowercase(),
-                layer: 0,
-            });
+            map.insert((5, col), default_key.into());
         }
         
         // Row 2: 2 keys at cols 5-6
         for col in 5..7 {
             let default_key = match col {
-                5 => "PGUP", 6 => "PGDN",
-                _ => "",
+                5 => k!(PageUp), 6 => k!(PageDown),
+                _ => k!(ErrorRollOver),
             };
             
-            map.insert((6, col), KeyConfig {
-                label: default_key.to_string(),
-                keycode: default_key.to_lowercase(),
-                layer: 0,
-            });
+            map.insert((6, col), default_key.into());
         }
         
         // Row 3: 2 keys at cols 5-6
         for col in 5..7 {
             let default_key = match col {
-                5 => "SPC", 6 => "BKSP",
-                _ => "",
+                5 => k!(Spacebar), 6 => k!(Backspace),
+                _ => k!(ErrorRollOver),
             };
             
-            map.insert((7, col), KeyConfig {
-                label: default_key.to_string(),
-                keycode: default_key.to_lowercase(),
-                layer: 0,
-            });
+            map.insert((7, col), default_key.into());
         }
         
         // Right thumb cluster
         // Row 1: 2 keys at cols 8-9 (aligned left, empty slot under col 7)
         for col in 8..10 {
             let default_key = match col {
-                8 => "LEFT", 9 => "RIGHT",
-                _ => "",
+                8 => k!(LeftArrow), 9 => k!(RightArrow),
+                _ => k!(ErrorRollOver),
             };
             
-            map.insert((5, col), KeyConfig {
-                label: default_key.to_string(),
-                keycode: default_key.to_lowercase(),
-                layer: 0,
-            });
+            map.insert((5, col), default_key.into());
         }
         
         // Row 2: 2 keys at cols 7-8 (starting from beginning)
         for col in 7..9 {
             let default_key = match col {
-                7 => "UP", 8 => "DOWN",
-                _ => "",
+                7 => k!(UpArrow), 8 => k!(DownArrow),
+                _ => k!(ErrorRollOver),
             };
             
-            map.insert((6, col), KeyConfig {
-                label: default_key.to_string(),
-                keycode: default_key.to_lowercase(),
-                layer: 0,
-            });
+            map.insert((6, col), default_key.into());
         }
         
         // Row 3: 2 keys at cols 7-8 (starting from beginning)
         for col in 7..9 {
             let default_key = match col {
-                7 => "DEL", 8 => "ENT",
-                _ => "",
+                7 => k!(Delete), 8 => k!(Enter),
+                _ => k!(ErrorRollOver),
             };
             
-            map.insert((7, col), KeyConfig {
-                label: default_key.to_string(),
-                keycode: default_key.to_lowercase(),
-                layer: 0,
-            });
+            map.insert((7, col), default_key.into());
         }
         
         map

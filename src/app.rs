@@ -105,7 +105,7 @@ pub fn app() -> Html {
             />
             
             <Layout 
-                keymap={keymap.get_current().clone()}
+                keymap={keymap.current().clone()}
                 selected_key={*selected_key}
                 current_layer={*current_layer}
                 on_key_click={on_key_click}

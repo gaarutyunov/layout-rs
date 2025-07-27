@@ -2,12 +2,12 @@ use yew::prelude::*;
 use super::keyboard::Keyboard;
 use super::key_editor::KeyEditor;
 use super::key_library::KeyLibrary;
-use super::key::KeyConfig;
 use std::collections::HashMap;
+use crate::keycodes::KeyboardUsage;
 
 #[derive(Properties, PartialEq)]
 pub struct LayoutProps {
-    pub keymap: HashMap<(usize, usize), KeyConfig>,
+    pub keymap: HashMap<(usize, usize), KeyboardUsage>,
     pub selected_key: Option<(usize, usize)>,
     pub current_layer: usize,
     pub on_key_click: Callback<(usize, usize)>,
@@ -22,8 +22,9 @@ pub fn layout(props: &LayoutProps) -> Html {
 
     let on_carousel_key_select = {
         let on_key_change = props.on_key_change.clone();
-        Callback::from(move |key: String| {
-            on_key_change.emit(key);
+        Callback::from(move |keycode: KeyboardUsage| {
+            let label: String = keycode.into();
+            on_key_change.emit(label);
         })
     };
 

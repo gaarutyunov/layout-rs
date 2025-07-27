@@ -1,12 +1,12 @@
 use yew::prelude::*;
-use super::key::KeyConfig;
 use super::hand::Hand;
 use super::thumb_cluster::ThumbCluster;
 use std::collections::HashMap;
+use crate::keycodes::KeyboardUsage;
 
 #[derive(Properties, PartialEq)]
 pub struct KeyboardProps {
-    pub keymap: HashMap<(usize, usize), KeyConfig>,
+    pub keymap: HashMap<(usize, usize), KeyboardUsage>,
     pub selected_key: Option<(usize, usize)>,
     pub on_key_click: Callback<(usize, usize)>,
     pub current_layer: usize,
