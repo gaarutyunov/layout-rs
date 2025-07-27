@@ -78,6 +78,20 @@ pub fn app() -> Html {
         })
     };
 
+    let on_key_drop = {
+        let keymap = keymap.clone();
+        let selected_key = selected_key.clone();
+        Callback::from(move |((row, col), key): ((usize, usize), String)| {
+            // Update the key directly without needing selection
+            let mut new_keymap = (*keymap).clone();
+            new_keymap.update_key(row, col, key);
+            keymap.set(new_keymap);
+            
+            // Also select the key that was dropped on
+            selected_key.set(Some((row, col)));
+        })
+    };
+
     html! {
         <div class="app">
             <Header 
@@ -96,6 +110,7 @@ pub fn app() -> Html {
                 current_layer={*current_layer}
                 on_key_click={on_key_click}
                 on_key_change={on_key_change}
+                on_key_drop={on_key_drop}
             />
         </div>
     }

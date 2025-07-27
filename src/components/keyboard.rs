@@ -10,6 +10,8 @@ pub struct KeyboardProps {
     pub selected_key: Option<(usize, usize)>,
     pub on_key_click: Callback<(usize, usize)>,
     pub current_layer: usize,
+    #[prop_or_default]
+    pub on_key_drop: Option<Callback<((usize, usize), String)>>,
 }
 
 #[function_component(Keyboard)]
@@ -24,6 +26,7 @@ pub fn keyboard(props: &KeyboardProps) -> Html {
                         on_key_click={props.on_key_click.clone()}
                         current_layer={props.current_layer}
                         is_left={true}
+                        on_key_drop={props.on_key_drop.clone()}
                     />
                 </div>
                 <div class="right-hand">
@@ -33,6 +36,7 @@ pub fn keyboard(props: &KeyboardProps) -> Html {
                         on_key_click={props.on_key_click.clone()}
                         current_layer={props.current_layer}
                         is_left={false}
+                        on_key_drop={props.on_key_drop.clone()}
                     />
                 </div>
             </div>
@@ -45,6 +49,7 @@ pub fn keyboard(props: &KeyboardProps) -> Html {
                         on_key_click={props.on_key_click.clone()}
                         current_layer={props.current_layer}
                         is_left={true}
+                        on_key_drop={props.on_key_drop.clone()}
                     />
                 </div>
                 <div class="right-thumb">
@@ -54,6 +59,7 @@ pub fn keyboard(props: &KeyboardProps) -> Html {
                         on_key_click={props.on_key_click.clone()}
                         current_layer={props.current_layer}
                         is_left={false}
+                        on_key_drop={props.on_key_drop.clone()}
                     />
                 </div>
             </div>

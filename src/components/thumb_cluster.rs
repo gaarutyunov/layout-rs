@@ -9,6 +9,8 @@ pub struct ThumbClusterProps {
     pub on_key_click: Callback<(usize, usize)>,
     pub current_layer: usize,
     pub is_left: bool,
+    #[prop_or_default]
+    pub on_key_drop: Option<Callback<((usize, usize), String)>>,
 }
 
 #[function_component(ThumbCluster)]
@@ -53,12 +55,20 @@ pub fn thumb_cluster(props: &ThumbClusterProps) -> Html {
                                 move |_| on_key_click.emit((row, col))
                             };
                             
+                            let on_drop = props.on_key_drop.as_ref().map(|callback| {
+                                let callback = callback.clone();
+                                Callback::from(move |key: String| {
+                                    callback.emit(((row, col), key));
+                                })
+                            });
+                            
                             html! {
                                 <Key 
                                     key_config={key_config}
                                     is_selected={is_selected}
                                     onclick={onclick}
                                     is_thumb={true}
+                                    on_drop={on_drop}
                                 />
                             }
                         })}

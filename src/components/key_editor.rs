@@ -37,6 +37,9 @@ pub fn key_editor(props: &KeyEditorProps) -> Html {
         html! {
             <div class="key-editor">
                 <h3>{"Select a key to edit"}</h3>
+                <p class="editor-instructions">
+                    {"Click a key on the keyboard to edit its label, or drag keys from the library directly onto the keyboard."}
+                </p>
             </div>
         }
     }

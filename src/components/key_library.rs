@@ -2,6 +2,7 @@ use yew::prelude::*;
 use web_sys::window;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
+use wasm_bindgen::JsCast;
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct KeyLibraryData {
@@ -356,13 +357,27 @@ pub fn key_library(props: &KeyLibraryProps) -> Html {
                                                 })
                                             };
                                             
+                                            let on_drag_start = {
+                                                let key = key.clone();
+                                                Callback::from(move |e: DragEvent| {
+                                                    // Store key in a data attribute for the drop handler to access
+                                                    if let Some(target) = e.target() {
+                                                        if let Ok(element) = target.dyn_into::<web_sys::HtmlElement>() {
+                                                            let _ = element.set_attribute("data-drag-key", &key);
+                                                        }
+                                                    }
+                                                })
+                                            };
+                                            
                                             html! {
                                                 <div class="library-key-container">
                                                     <button 
                                                         class="library-key"
                                                         onclick={on_select}
                                                         key={key.clone()}
-                                                        title={format!("Click to use '{}'", key)}
+                                                        title={format!("Click to use '{}' or drag to keyboard", key)}
+                                                        draggable="true"
+                                                        ondragstart={on_drag_start}
                                                     >
                                                         {&key}
                                                     </button>

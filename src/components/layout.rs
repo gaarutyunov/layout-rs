@@ -12,6 +12,7 @@ pub struct LayoutProps {
     pub current_layer: usize,
     pub on_key_click: Callback<(usize, usize)>,
     pub on_key_change: Callback<String>,
+    pub on_key_drop: Callback<((usize, usize), String)>,
 }
 
 #[function_component(Layout)]
@@ -35,6 +36,7 @@ pub fn layout(props: &LayoutProps) -> Html {
                         selected_key={props.selected_key}
                         on_key_click={props.on_key_click.clone()}
                         current_layer={props.current_layer}
+                        on_key_drop={Some(props.on_key_drop.clone())}
                     />
                     
                     <KeyEditor 
