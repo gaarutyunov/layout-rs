@@ -229,6 +229,7 @@ body {
   align-items: center;
   overflow: hidden;
   min-height: 0; /* Allow flexbox to work properly */
+  margin-top: -2px; /* Compensate for border */
 }
 
 .layout-container {
@@ -239,6 +240,7 @@ body {
   height: 100%;
   overflow: hidden;
   min-height: 0; /* Important for nested flexbox */
+  padding-top: 2px; /* Compensate for border */
 }
 
 .keyboard-section {
