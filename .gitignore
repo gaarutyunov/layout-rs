@@ -1,7 +1,2 @@
 /dist/
 /target/
-
-# Keep AI assistant configuration files
-!.claude_config
-!.copilot_config.json
-!.ai_instructions.md

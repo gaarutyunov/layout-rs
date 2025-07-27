@@ -1,0 +1,29 @@
+# Copilot Instructions for Layout-RS
+
+This is a Rust keyboard layout editor project using Yew and Trunk.
+
+## Project Structure
+- Main components are in `src/components/` directory
+- Styling is in `index.scss` file
+- Project features keyboard layout editing with local storage persistence
+
+## Development Workflow
+- Always check active terminals before running serve/build commands
+- Use `get_terminal_output` tool to check if trunk serve is already running on port 8080
+- Look for 'Local:' or 'trunk serve' in terminal output to identify active dev server
+- If dev server is running, inform user instead of starting new instance
+- Prefer `cargo check` for quick compilation validation
+- Only run `trunk serve --port 8080` if no dev server is detected
+
+## Build Tools and Commands
+- **Framework**: Yew (Rust WebAssembly frontend framework)
+- **Build Tool**: Trunk
+- **Dev Server**: `trunk serve --port 8080`
+- **Quick Check**: `cargo check`
+- **Build**: `trunk build`
+
+## Best Practices
+- Check for running processes before starting new development servers
+- Use cargo check for fast compilation feedback
+- Maintain component modularity in the components directory
+- Follow Rust and Yew conventions for component structure
