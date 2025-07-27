@@ -40,33 +40,6 @@ body {
   gap: 1.5rem;
 }
 
-.layer-selector {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.layer-btn {
-  background: #444;
-  border: 2px solid #666;
-  color: #fff;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.layer-btn:hover {
-  background: #555;
-  border-color: #777;
-}
-
-.layer-btn.active {
-  background: #00d4aa;
-  border-color: #00d4aa;
-  color: #000;
-}
-
 .save-btn {
   background: #2d4a3d;
   border: 2px solid #4a8566;
@@ -834,12 +807,6 @@ body {
   border-color: #6b1488;
 }
 
-.library-key[title*="LAYER"], .library-key[title*="LOWER"], 
-.library-key[title*="RAISE"], .library-key[title*="ADJUST"] {
-  background: #2d4a4a;
-  border-color: #146b6b;
-}
-
 /* Drag and Drop styles */
 .library-key[draggable="true"] {
   cursor: grab;
@@ -854,6 +821,34 @@ body {
 .library-key[draggable="true"]:active {
   cursor: grabbing;
   transform: translateY(0);
+}
+
+.library-key.dragging {
+  opacity: 0.5;
+  transform: rotate(5deg) scale(0.95);
+  cursor: grabbing;
+  box-shadow: 0 8px 16px rgba(0, 212, 170, 0.4);
+}
+
+.key[draggable="true"] {
+  cursor: grab;
+  transition: all 0.2s ease;
+}
+
+.key[draggable="true"]:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 212, 170, 0.2);
+}
+
+.key[draggable="true"]:active {
+  cursor: grabbing;
+}
+
+.key.dragging {
+  opacity: 0.6;
+  transform: rotate(3deg) scale(0.95);
+  cursor: grabbing;
+  box-shadow: 0 6px 12px rgba(0, 212, 170, 0.3);
 }
 
 .key.drag-over {

@@ -9,7 +9,6 @@ use crate::keycodes::KeyboardUsage;
 pub struct LayoutProps {
     pub keymap: HashMap<(usize, usize), KeyboardUsage>,
     pub selected_key: Option<(usize, usize)>,
-    pub current_layer: usize,
     pub on_key_click: Callback<(usize, usize)>,
     pub on_key_change: Callback<String>,
     pub on_key_drop: Callback<((usize, usize), String)>,
@@ -36,7 +35,6 @@ pub fn layout(props: &LayoutProps) -> Html {
                         keymap={props.keymap.clone()}
                         selected_key={props.selected_key}
                         on_key_click={props.on_key_click.clone()}
-                        current_layer={props.current_layer}
                         on_key_drop={Some(props.on_key_drop.clone())}
                     />
                     

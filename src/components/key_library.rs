@@ -1,5 +1,6 @@
 use yew::prelude::*;
 use once_cell::sync::Lazy;
+use wasm_bindgen::JsCast;
 use crate::keycodes::KeyboardUsage;
 
 static KEY_CATEGORIES: Lazy<Vec<(&'static str, Vec<KeyboardUsage>)>> = Lazy::new(|| {
@@ -89,12 +90,27 @@ pub fn key_library(props: &KeyLibraryProps) -> Html {
                                                 })
                                             };
                                             
+                                            let on_drag_start = {
+                                                let keycode = keycode.clone();
+                                                Callback::from(move |e: DragEvent| {
+                                                    let label: String = keycode.clone().into();
+                                                    web_sys::console::log_1(&format!("Dragging library key: {}", label).into());
+                                                    if let Some(target) = e.target() {
+                                                        if let Ok(element) = target.dyn_into::<web_sys::HtmlElement>() {
+                                                            let _ = element.set_attribute("data-drag-key", &label);
+                                                        }
+                                                    }
+                                                })
+                                            };
+                                            
                                             html! {
                                                 <button 
                                                     class="library-key"
                                                     onclick={on_select}
                                                     key={label}
-                                                    title={format!("Click to use '{}'", label)}
+                                                    title={format!("Click to use '{}' or drag to keyboard", label)}
+                                                    draggable="true"
+                                                    ondragstart={on_drag_start}
                                                 >
                                                     {label}
                                                 </button>

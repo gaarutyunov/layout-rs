@@ -2,8 +2,6 @@ use yew::prelude::*;
 
 #[derive(Properties, PartialEq)]
 pub struct HeaderProps {
-    pub current_layer: usize,
-    pub on_layer_change: Callback<usize>,
     pub on_load_layout: Callback<()>,
     pub on_save_layout: Callback<()>,
     pub on_reset_layout: Callback<()>,
@@ -53,25 +51,6 @@ pub fn header(props: &HeaderProps) -> Html {
         <header class="header">
             <h1>{"Dactyl Manuform 5x7 Layout Editor"}</h1>
             <div class="header-controls">
-                <div class="layer-selector">
-                    <span>{"Layer: "}</span>
-                    {for (0..4).map(|layer| {
-                        let is_active = layer == props.current_layer;
-                        let onclick = {
-                            let on_layer_change = props.on_layer_change.clone();
-                            move |_| on_layer_change.emit(layer)
-                        };
-                        html! {
-                            <button 
-                                class={classes!("layer-btn", is_active.then(|| "active"))}
-                                onclick={onclick}
-                            >
-                                {layer}
-                            </button>
-                        }
-                    })}
-                </div>
-                
                 <div class="layout-controls">
                     <button 
                         class={classes!("save-btn", props.has_unsaved_changes.then(|| "has-changes"))} 

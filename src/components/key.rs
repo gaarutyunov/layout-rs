@@ -43,6 +43,7 @@ pub fn key(props: &KeyProps) -> Html {
         Callback::from(move |e: DragEvent| {
             e.prevent_default();
             is_drag_over.set(false);
+            web_sys::console::log_1(&"Drop event triggered".into());
             
             if let Some(callback) = &on_drop_callback {
                 // Try to get the dragged key from the data attribute fallback
@@ -51,6 +52,7 @@ pub fn key(props: &KeyProps) -> Html {
                         if let Ok(Some(dragged)) = document.query_selector("[data-drag-key]") {
                             if let Ok(element) = dragged.dyn_into::<web_sys::HtmlElement>() {
                                 if let Some(key) = element.get_attribute("data-drag-key") {
+                                    web_sys::console::log_1(&format!("Dropping key: {}", key).into());
                                     callback.emit(key);
                                     let _ = element.remove_attribute("data-drag-key");
                                 }

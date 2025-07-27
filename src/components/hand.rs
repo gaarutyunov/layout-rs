@@ -8,7 +8,6 @@ pub struct HandProps {
     pub keymap: HashMap<(usize, usize), KeyboardUsage>,
     pub selected_key: Option<(usize, usize)>,
     pub on_key_click: Callback<(usize, usize)>,
-    pub current_layer: usize,
     pub is_left: bool,
     #[prop_or_default]
     pub on_key_drop: Option<Callback<((usize, usize), String)>>,

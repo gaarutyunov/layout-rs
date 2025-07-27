@@ -4,7 +4,6 @@ use crate::components::{Header, Layout, Keymap};
 
 #[function_component(App)]
 pub fn app() -> Html {
-    let current_layer = use_state(|| 0usize);
     let selected_key = use_state(|| None::<(usize, usize)>);
     let keymap = use_state(|| Keymap::new());
 
@@ -24,13 +23,6 @@ pub fn app() -> Html {
                 new_keymap.update_key(row, col, value);
                 keymap.set(new_keymap);
             }
-        })
-    };
-
-    let on_layer_change = {
-        let current_layer = current_layer.clone();
-        Callback::from(move |layer: usize| {
-            current_layer.set(layer);
         })
     };
 
@@ -105,8 +97,6 @@ pub fn app() -> Html {
     html! {
         <div class="app">
             <Header 
-                current_layer={*current_layer}
-                on_layer_change={on_layer_change}
                 on_save_layout={on_save_layout}
                 on_load_layout={on_load_layout}
                 on_reset_layout={on_reset_layout}
@@ -118,7 +108,6 @@ pub fn app() -> Html {
             <Layout 
                 keymap={keymap.current().clone()}
                 selected_key={*selected_key}
-                current_layer={*current_layer}
                 on_key_click={on_key_click}
                 on_key_change={on_key_change}
                 on_key_drop={on_key_drop}
